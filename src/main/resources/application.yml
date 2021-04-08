@@ -4,7 +4,7 @@ mybatis:
 
 logging:
   level:
-    com.teg.analysis.mapper: DEBUG
+    com.sre.analysis.mapper: DEBUG
 
 #spring:
 #      # yml配置的优先级高于java配置；如果yml配置和java配置同时存在，则yml配置会覆盖java配置

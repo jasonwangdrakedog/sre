@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.teg.analysis.mapper.SecondLineMapper">
-    <resultMap id="menuMap" type="com.teg.analysis.model.DO.SecondLineDO">
+<mapper namespace="com.sre.analysis.mapper.SecondLineMapper">
+    <resultMap id="menuMap" type="com.sre.analysis.model.DO.SecondLineDO">
     </resultMap>
 
-    <select id="listMenu" resultType="com.teg.analysis.model.DO.SecondLineDO">
+    <select id="listMenu" resultType="com.sre.analysis.model.DO.SecondLineDO">
         select * from opm_order_ext_log_v2  limit 2
     </select>
 

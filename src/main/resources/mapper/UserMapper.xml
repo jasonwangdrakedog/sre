@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.teg.analysis.mapper.UserMapper">
+    <resultMap id="userMap" type="com.teg.analysis.model.DO.UserDO">
+    <!--    <result column="id" property="id"/>
+        <result column="user_name" property="userName"/>
+        <result column="sex" property="sex"/>-->
+    </resultMap>
+
+    <select id="queryAllUsers" resultType="com.teg.analysis.model.DO.UserDO">
+        select * from user
+    </select>
+
+    <insert id="createUser" parameterType="com.teg.analysis.model.DO.UserDO">
+        insert into user
+        (birthday, user_name, user_address, sex,height,weight,province)
+        values
+        (#{birthday}, #{userName}, #{userAddress}, #{sex}, #{height}, #{weight}, #{province})
+    </insert>
+
+    <update id="updateUser" parameterType="com.teg.analysis.model.DO.UserDO">
+        <if test="userId!=null">
+            update user
+            <set>
+                <if test="birthday!=null and birthday !=''">birthday=#{birthday}</if>
+                <if test="height!=null ">height=#{height}</if>
+                <if test="weight!=null ">weight=#{weight}</if>
+                <if test="province!=null and province !=''">province=#{province}</if>
+                <if test="sex!=null ">sex=#{sex}</if>
+                <if test="userAddress!=null and userAddress !=''">user_address=#{userAddress}</if>
+                <if test="userName!=null and userName !=''">user_name=#{userName}</if>
+            </set>
+            where user_id = #{userId}
+        </if>
+    </update>
+    <insert id="batchCreateUser" parameterType="java.util.List">
+        INSERT INTO
+        user(birthday,user_name,user_address,sex,height,weight,province)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.birthday},
+            #{item.userName},
+            #{item.userAddress},
+            #{item.sex},
+            #{item.height},
+            #{item.weight},
+            #{item.province}
+            )
+        </foreach>
+    </insert>
+
+</mapper>

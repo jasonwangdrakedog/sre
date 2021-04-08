@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.teg.analysis.mapper.ComplainWorkOrderMapper">
+    <resultMap id="baseMap" type="com.teg.analysis.model.DTO.ComplainWorkOrderDTO">
+        <!-- <result property="id" column="id"></result>
+         <result property="workNo" column="work_no"></result>-->
+
+    </resultMap>
+
+
+    <select id="list4UnHandle" resultType="com.teg.analysis.model.DTO.ComplainWorkOrderDTO"
+            parameterType="com.teg.analysis.model.REQ.WorkOrderQueryREQ">
+        select * from complain_origin
+        <where>
+            three_line_status != 2
+            <!--  ty_status !='已作废'-->
+            <if test="workNo!=null and workNo!=''">
+                AND work_no = #{workNo}
+            </if>
+            <if test="start!=null and start!='' and end!=null and end!=''">
+                AND work_no_date &lt;= #{end} AND work_no_date >#{start}
+            </if>
+        </where>
+        order by work_no_date desc
+        <if test="page!=null and pageSize!=null">
+            limit #{page},#{pageSize}
+        </if>
+    </select>
+    <select id="count4UnHandle" resultType="Integer" parameterType="com.teg.analysis.model.REQ.WorkOrderQueryREQ">
+        select count(*) from complain_origin
+        <where>
+            three_line_status != 2
+            <!--  ty_status !='已作废'-->
+            <if test="workNo!=null and workNo!=''">
+                AND work_no = #{workNo}
+            </if>
+            <if test="start!=null and start!='' and end!=null and end!=''">
+                AND work_no_date &lt;= #{end} AND work_no_date >#{start}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="list" resultType="com.teg.analysis.model.DTO.ComplainWorkOrderDTO"
+            parameterType="com.teg.analysis.model.REQ.WorkOrderQueryREQ">
+        select * from complain_origin
+        <where>
+            <!--  ty_status !='已作废'-->
+            <if test="workNo!=null and workNo!=''">
+                AND work_no = #{workNo}
+            </if>
+            <if test="start!=null and start!='' and end!=null and end!=''">
+                AND work_no_date &lt;= #{end} AND work_no_date >#{start}
+            </if>
+            <if test="tyStatus!=null and tyStatus.size()>0">
+                AND ty_status in
+                <foreach item="item" collection="tyStatus" index="index" open="(" separator="," close=")">#{item}
+                </foreach>
+            </if>
+        </where>
+        order by work_no_date desc
+        <if test="page!=null and pageSize!=null">
+            limit #{page},#{pageSize}
+        </if>
+    </select>
+
+    <select id="totalCount" resultType="Integer" parameterType="com.teg.analysis.model.REQ.WorkOrderQueryREQ">
+        select count(*) from complain_origin
+        <where>
+            <!--  ty_status !='已作废'-->
+            <if test="workNo!=null and workNo!=''">
+                AND work_no = #{workNo}
+            </if>
+            <if test="start!=null and start!='' and end!=null and end!=''">
+                AND work_no_date &lt;= #{end} AND work_no_date >#{start}
+            </if>
+            <if test="tyStatus!=null and tyStatus.size()>0">
+                AND ty_status in
+                <foreach item="item" collection="tyStatus" index="index" open="(" separator="," close=")">#{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+
+    <insert id="batchCreateComplainWorkOrder" parameterType="java.util.List">
+        INSERT INTO
+        complain_origin(work_no,ty_status,base_summary,descript,source,protype,priority,
+        pool_type,sys_class,sys_class_second,happen_time,produce_first,produce_second,reason_class,
+        reason_class_second,plan_over,problem_reason,question_basis,solution,deal_group,work_no_date)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.workNo},
+            #{item.tyStatus},
+            #{item.baseSummary},
+            #{item.descript},
+            #{item.source},
+            #{item.protype},
+            #{item.priority},
+            #{item.poolType},
+            #{item.sysClass},
+            #{item.sysClassSecond},
+            #{item.happenTime},
+            #{item.produceFirst},
+            #{item.produceSecond},
+            #{item.reasonClass},
+            #{item.reasonClassSecond},
+            #{item.planOver},
+            #{item.problemReason},
+            #{item.questionBasis},
+            #{item.solution},
+            #{item.dealGroup},
+            #{item.workNoDate}
+            )
+        </foreach>
+        on duplicate key update
+        problem_reason = values(problem_reason),
+        solution=values(solution),
+        three_line_status =1,
+        update_date= now(),
+        ty_status=values(ty_status)
+    </insert>
+
+</mapper>
